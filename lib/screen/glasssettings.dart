@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:touchpanel/screen/register.dart';
 
 class MaterialSelectionPage extends StatefulWidget {
   const MaterialSelectionPage({super.key});
@@ -17,8 +18,6 @@ class _MaterialSelectionPageState extends State<MaterialSelectionPage> {
   String _selectedSystemType = "PROTOCOL";
   String _selectedColorType = "LİGHT COLOUR";
   List<List<IconData?>> moduleIcons = [];
-
-
 
   void _generateCode() {
     String materialCode = '';
@@ -58,7 +57,7 @@ class _MaterialSelectionPageState extends State<MaterialSelectionPage> {
     } else if (_selectedBoxColor == 'Gray') {
       boxColorCode += 'G';
     } else {
-      boxColorCode += 'X'; 
+      boxColorCode += 'X';
     }
 
     String transparencyCode = '';
@@ -107,7 +106,8 @@ class _MaterialSelectionPageState extends State<MaterialSelectionPage> {
       colorTypeCode += 'X';
     }
 
-    String finalCode = '$materialCode$quantityCode$proximityCode$boxColorCode$transparencyCode$vibrationCode$systemTypeCode$colorTypeCode';
+    String finalCode =
+        '$materialCode$quantityCode$proximityCode$boxColorCode$transparencyCode$vibrationCode$systemTypeCode$colorTypeCode';
 
     showDialog(
       context: context,
@@ -128,101 +128,102 @@ class _MaterialSelectionPageState extends State<MaterialSelectionPage> {
     );
   }
 
-void _onBoxTap(int index) {
-  int? _sectionCount;
-  List<IconData?> _selectedIcons = [];
+  void _onBoxTap(int index) {
+    int? _sectionCount;
+    List<IconData?> _selectedIcons = [];
 
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      TextEditingController _sectionController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController _sectionController = TextEditingController();
 
-      return StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-          return AlertDialog(
-            title: const Text('Configure Module Icons'),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: _sectionController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: 'Enter number of sections'),
-                    onChanged: (value) {
-                      setState(() {
-                        _sectionCount = int.tryParse(value);
-                        _selectedIcons = List<IconData?>.filled(_sectionCount ?? 0, null);
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  if (_sectionCount != null)
-                    ...List.generate(
-                      _sectionCount!,
-                      (sectionIndex) => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Section ${sectionIndex + 1}:'),
-                          DropdownButton<IconData>(
-                            value: _selectedIcons[sectionIndex],
-                            items: const [
-                              DropdownMenuItem(
-                                value: Icons.home,
-                                child: Icon(Icons.home),
-                              ),
-                              DropdownMenuItem(
-                                value: Icons.star,
-                                child: Icon(Icons.star),
-                              ),
-                              DropdownMenuItem(
-                                value: Icons.settings,
-                                child: Icon(Icons.settings),
-                              ),
-                              DropdownMenuItem(
-                                value: Icons.lightbulb,
-                                child: Icon(Icons.lightbulb),
-                              ),
-                            ],
-                            onChanged: (IconData? newIcon) {
-                              setState(() {
-                                _selectedIcons[sectionIndex] = newIcon;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: const Text('Configure Module Icons'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: _sectionController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          hintText: 'Enter number of sections'),
+                      onChanged: (value) {
+                        setState(() {
+                          _sectionCount = int.tryParse(value);
+                          _selectedIcons =
+                              List<IconData?>.filled(_sectionCount ?? 0, null);
+                        });
+                      },
                     ),
-                ],
+                    const SizedBox(height: 16),
+                    if (_sectionCount != null)
+                      ...List.generate(
+                        _sectionCount!,
+                        (sectionIndex) => Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Section ${sectionIndex + 1}:'),
+                            DropdownButton<IconData>(
+                              value: _selectedIcons[sectionIndex],
+                              items: const [
+                                DropdownMenuItem(
+                                  value: Icons.home,
+                                  child: Icon(Icons.home),
+                                ),
+                                DropdownMenuItem(
+                                  value: Icons.star,
+                                  child: Icon(Icons.star),
+                                ),
+                                DropdownMenuItem(
+                                  value: Icons.settings,
+                                  child: Icon(Icons.settings),
+                                ),
+                                DropdownMenuItem(
+                                  value: Icons.lightbulb,
+                                  child: Icon(Icons.lightbulb),
+                                ),
+                              ],
+                              onChanged: (IconData? newIcon) {
+                                setState(() {
+                                  _selectedIcons[sectionIndex] = newIcon;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    if (_sectionCount != null) {
-                      while (moduleIcons.length <= index) {
-                        moduleIcons.add([]);
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      if (_sectionCount != null) {
+                        while (moduleIcons.length <= index) {
+                          moduleIcons.add([]);
+                        }
+                        moduleIcons[index] = List.from(_selectedIcons);
                       }
-                      moduleIcons[index] = List.from(_selectedIcons);
-                    }
-                  });
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Save'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
-              ),
-            ],
-          );
-        },
-      );
-    },
-  );
-}
-
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Save'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -325,13 +326,28 @@ void _onBoxTap(int index) {
                   },
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(2.0),
                   child: ElevatedButton(
                     onPressed: _generateCode,
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.grey.shade800, 
+                      foregroundColor: Colors.grey.shade800,
                     ),
                     child: const Text('Generate Code'),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterPage()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.grey.shade800,
+                    ),
+                    child: const Text('Register'),
                   ),
                 ),
               ],
@@ -346,7 +362,7 @@ void _onBoxTap(int index) {
                   children: [
                     for (int i = 0; i < _getqQuantity(); i++)
                       GestureDetector(
-                        onTap: () => _onBoxTap(i), 
+                        onTap: () => _onBoxTap(i),
                         child: Container(
                           width: 450,
                           height: 450,
@@ -358,19 +374,22 @@ void _onBoxTap(int index) {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              if (moduleIcons.length > i && moduleIcons[i].isNotEmpty)
+                              if (moduleIcons.length > i &&
+                                  moduleIcons[i].isNotEmpty)
                                 ...moduleIcons[i].map(
-                                  (icon) => Icon(icon, size: 50, color: Colors.black),
+                                  (icon) =>
+                                      Icon(icon, size: 50, color: Colors.black),
                                 )
                               else
-                            const Text(
-                              "No Icons Selected",
-                              style: TextStyle(fontSize: 18, color: Colors.black),
-                            ),
-                          ],
+                                const Text(
+                                  "No Icons Selected",
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.black),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -423,15 +442,14 @@ void _onBoxTap(int index) {
   }
 
   int _getqQuantity() {
-  return _selectedQuantity == 'Single'
-      ? 1
-      : _selectedQuantity == 'Double'
-          ? 2
-          : _selectedQuantity == 'Triple'
-              ? 3
-              : 1;
-}
-
+    return _selectedQuantity == 'Single'
+        ? 1
+        : _selectedQuantity == 'Double'
+            ? 2
+            : _selectedQuantity == 'Triple'
+                ? 3
+                : 1;
+  }
 
   Color _getBoxColor() {
     switch (_selectedBoxColor) {
